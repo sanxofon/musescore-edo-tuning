@@ -42,7 +42,7 @@ This MuseScore 4 Retuner Plugin, written in QML, allows users to retune notes in
 
 ## Disclaimer
 
-- For Mac users, the plugin is compatible with MuseScore 4.0.x; however, MuseScore 4.1.x currently crashes. Track that issue [here]().
+- For Mac users, the plugin is compatible with MuseScore 4.0.x; however, MuseScore 4.1.x currently crashes. Track that issue [here](https://github.com/musescore/MuseScore/issues/20380).
 - The EDO Tuning Plugin currently works for MuseScore 4.x on Windows.
 
 ## Support and Contributions
