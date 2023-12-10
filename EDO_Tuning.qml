@@ -16,7 +16,7 @@
 
 import MuseScore 3.0
 import QtQuick 2.2
-import QtQuick.Controls 1.1
+import QtQuick.Controls 2.2
 import QtQuick.Controls.Styles 1.3
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.1
@@ -787,26 +787,26 @@ MuseScore {
             GroupBox {
                 title: "Temperament"
                 RowLayout {
-                    ExclusiveGroup { id: tempamentTypeGroup }
+                    ButtonGroup { id: tempamentTypeGroup }
                     RadioButton {
                         id: equal12_button
                         text: "12-EDO"
                         checked: true
-                        exclusiveGroup: tempamentTypeGroup
+                        ButtonGroup.group: tempamentTypeGroup
                         onClicked: { temperamentClicked(equal12) }
                     }
                     RadioButton {
                         id: equal17_button
                         text: "17-EDO"
                         checked: false
-                        exclusiveGroup: tempamentTypeGroup
+                        ButtonGroup.group: tempamentTypeGroup
                         onClicked: { temperamentClicked(equal17) }
                     }
                     RadioButton {
                         id: equal19_button
                         text: "19-EDO"
                         checked: false
-                        exclusiveGroup: tempamentTypeGroup
+                        ButtonGroup.group: tempamentTypeGroup
                         onClicked: { temperamentClicked(equal19) }
                     }
                 }
@@ -821,131 +821,131 @@ MuseScore {
                             GridLayout {
                                 columns: 7
                                 anchors.margins: 10
-                                ExclusiveGroup { id: rootNoteGroup }
+                                ButtonGroup { id: rootNoteGroup }
                                 RadioButton {
                                     text: "Fb"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_f_flat
                                     onClicked: { rootNoteClicked(0) }
                                 }
                                 RadioButton {
                                     text: "Cb"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_c_flat
                                     onClicked: { rootNoteClicked(1) }
                                 }
                                 RadioButton {
                                     text: "Gb"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_g_flat
                                     onClicked: { rootNoteClicked(2) }
                                 }
                                 RadioButton {
                                     text: "Db"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_d_flat
                                     onClicked: { rootNoteClicked(3) }
                                 }
                                 RadioButton {
                                     text: "Ab"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_a_flat
                                     onClicked: { rootNoteClicked(4) }
                                 }
                                 RadioButton {
                                     text: "Eb"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_e_flat
                                     onClicked: { rootNoteClicked(5) }
                                 }
                                 RadioButton {
                                     text: "Bb"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_b_flat
                                     onClicked: { rootNoteClicked(6) }
                                 }
                                 RadioButton {
                                     text: "F"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_f
                                     onClicked: { rootNoteClicked(7) }
                                 }
                                 RadioButton {
                                     text: "C"
                                     checked: true
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_c
                                     onClicked: { rootNoteClicked(8) }
                                 }
                                 RadioButton {
                                     text: "G"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_g
                                     onClicked: { rootNoteClicked(9) }
                                 }
                                 RadioButton {
                                     text: "D"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_d
                                     onClicked: { rootNoteClicked(10) }
                                 }
                                 RadioButton {
                                     text: "A"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_a
                                     onClicked: { rootNoteClicked(11) }
                                 }
                                 RadioButton {
                                     text: "E"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_e
                                     onClicked: { rootNoteClicked(12) }
                                 }
                                 RadioButton {
                                     text: "B"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_b
                                     onClicked: { rootNoteClicked(13) }
                                 }
                                 RadioButton {
                                     text: "F#"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_f_sharp
                                     onClicked: { rootNoteClicked(14) }
                                 }
                                 RadioButton {
                                     text: "C#"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_c_sharp
                                     onClicked: { rootNoteClicked(15) }
                                 }
                                 RadioButton {
                                     text: "G#"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_g_sharp
                                     onClicked: { rootNoteClicked(16) }
                                 }
                                 RadioButton {
                                     text: "D#"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_d_sharp
                                     onClicked: { rootNoteClicked(17) }
                                 }
                                 RadioButton {
                                     text: "A#"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_a_sharp
                                     onClicked: { rootNoteClicked(18) }
                                 }
                                 RadioButton {
                                     text: "E#"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_e_sharp
                                     onClicked: { rootNoteClicked(19) }
                                 }
                                 RadioButton {
                                     text: "B#"
-                                    exclusiveGroup: rootNoteGroup
+                                    ButtonGroup.group: rootNoteGroup
                                     id: root_b_sharp
                                     onClicked: { rootNoteClicked(20) }
                                 }
@@ -957,132 +957,132 @@ MuseScore {
                             GridLayout {
                                 columns: 7
                                 anchors.margins: 10
-                                ExclusiveGroup { id: pureToneGroup }
+                                ButtonGroup { id: pureToneGroup }
                                 RadioButton {
                                     text: "Fb"
                                     id: pure_f_flat
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(0) }
                                 }
                                 RadioButton {
                                     text: "Cb"
                                     id: pure_c_flat
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(1) }
                                 }
                                 RadioButton {
                                     text: "Gb"
                                     id: pure_g_flat
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(2) }
                                 }
                                 RadioButton {
                                     text: "Db"
                                     id: pure_d_flat
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(3) }
                                 }
                                 RadioButton {
                                     text: "Ab"
                                     id: pure_a_flat
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(4) }
                                 }
                                 RadioButton {
                                     text: "Eb"
                                     id: pure_e_flat
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(5) }
                                 }
                                 RadioButton {
                                     text: "Bb"
                                     id: pure_b_flat
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(6) }
                                 }
                                 RadioButton {
                                     text: "F"
                                     id: pure_f
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(7) }
                                 }
                                 RadioButton {
                                     text: "C"
                                     id: pure_c
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(8) }
                                 }
                                 RadioButton {
                                     text: "G"
                                     id: pure_g
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(9) }
                                 }
                                 RadioButton {
                                     text: "D"
                                     id: pure_d
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(10) }
                                 }
                                 RadioButton {
                                     text: "A"
                                     checked: true
                                     id: pure_a
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(11) }
                                 }
                                 RadioButton {
                                     text: "E"
                                     id: pure_e
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(12) }
                                 }
                                 RadioButton {
                                     text: "B"
                                     id: pure_b
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(13) }
                                 }
                                 RadioButton {
                                     text: "F#"
                                     id: pure_f_sharp
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(14) }
                                 }
                                 RadioButton {
                                     text: "C#"
                                     id: pure_c_sharp
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(15) }
                                 }
                                 RadioButton {
                                     text: "G#"
                                     id: pure_g_sharp
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(16) }
                                 }
                                 RadioButton {
                                     text: "D#"
                                     id: pure_d_sharp
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(17) }
                                 }
                                 RadioButton {
                                     text: "A#"
                                     id: pure_a_sharp
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(18) }
                                 }
                                 RadioButton {
                                     text: "E#"
                                     id: pure_e_sharp
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(19) }
                                 }
                                 RadioButton {
                                     text: "B#"
                                     id: pure_b_sharp
-                                    exclusiveGroup: pureToneGroup
+                                    ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(20) }
                                 }
                             }
