@@ -23,7 +23,7 @@ import QtQuick.Dialogs 1.1
 import FileIO 3.0
 
 MuseScore {
-    version: "1.0.0"
+    version: "1.1.0"
     title: "EDO Tuning"
     description: "Apply various temperaments and tunings"
     pluginType: "dialog"
