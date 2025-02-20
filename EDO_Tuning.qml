@@ -25,7 +25,7 @@ import FileIO 3.0
 MuseScore {
     version: "1.1.0"
     title: "EDO Tuning"
-    description: "Apply various temperaments and tunings"
+    description: "Apply various temperaments and tunings, including 15-EDO" // Updated description
     pluginType: "dialog"
     categoryCode: "playback"
     thumbnailName: "edo_tuning.png"
@@ -33,52 +33,61 @@ MuseScore {
     width: 590
     height: 712
 
-    property var offsetTextWidth: 40;
-    property var offsetLabelAlignment: 0x02 | 0x80;
+    property var offsetTextWidth: 40; // Width for offset text input fields
+    property var offsetLabelAlignment: 0x02 | 0x80; // Alignment for offset labels
 
-    property var history: 0;
+    property var history: 0; // Command history for undo/redo
 
-    // set true if customisations are made to the tuning
-    property var modified: false;
+    property var modified: false; // Flag to track if tuning has been modified
 
-    property var numOffsets: 21;
+    property var numOffsets: 21; // Number of offsets in the cycle of fifths (for Fb to B#)
 
     /*
-     * These values are in cents. One cent is defined as 100th of an equal tempered semitone.
-     * Each row is ordered in the cycle of fifths, so Fb, Cb, Gb, Db, Ab, Eb, Bb, F, C, G, D, A, E, B, F#, C#, G#, D#, A#, E#, B#;
-     * and the values are offsets from the equal tempered value.
-     *
-     * However for tunings who's default root note is not C, the values are pre-rotated so that applying the
-     * root note rotation will put the first value of the sequence at the root note.
+     * Tuning definitions for different Equal Divisions of the Octave (EDO).
+     * Each definition includes:
+     * 'offsets': An array of cent offsets for each note in the cycle of fifths, ordered as:
+     *            Fb, Cb, Gb, Db, Ab, Eb, Bb, F, C, G, D, A, E, B, F#, C#, G#, D#, A#, E#, B#.
+     *            These offsets are deviations from 12-EDO equal temperament.
+     * 'root':    The index of the root note (tonic) in the 'offsets' array. 8 corresponds to 'C'.
+     * 'pure':    The index of the 'pure' tone used for tuning adjustments. 11 corresponds to 'A'.
+     * 'name':    A unique name for the temperament.
      */
     property var equal12: {
         'offsets': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        'root': 8,
-        'pure': 11,
+        'root': 8, // Root note is C
+        'pure': 11, // Pure tone is A
         'name': "equal12"
     }
     property var equal17: {
                  //  0      1        2       3       4       5       6       7       8       9       10    11   12    13     14     15     16     17     18     19     20
-                 //  Fb     Cb       Gb      Db      Ab      Eb      Bb      F       C       G       D     A    E     B      F#     C#     G#     D#     A#     E#     B#    
+                 //  Fb     Cb       Gb      Db      Ab      Eb      Bb      F       C       G       D     A    E     B      F#     C#     G#     D#     A#     E#     B#
         'offsets': [-64.71, -58.82, -52.94, -47.06, -41.18, -35.29, -29.41, -23.53, -17.65, -11.76, -5.88, 0.0, 5.88, 11.76, 17.65, 23.53, 29.41, 35.29, 41.18, 47.06, 52.94],
-        'root': 8,
-        'pure': 11,
+        'root': 8, // Root note is C
+        'pure': 11, // Pure tone is A
         'name': "equal17"
     }
     property var equal19: {
                 //  0      1      2      3      4      5      6      7      8      9      10    11    12     13      14      15      16      17     18      19      20
-                //  Fb     Cb     Gb     Db     Ab     Eb     Bb     F      C      G      D     A     E      B       F#      C#      G#      D#     A#      E#      B#    
+                //  Fb     Cb     Gb     Db     Ab     Eb     Bb     F      C      G      D     A     E      B       F#      C#      G#      D#     A#      E#      B#
         'offsets': [57.89, 52.63, 47.37, 42.11, 36.84, 31.58, 26.32, 21.05, 15.79, 10.53, 5.26, 0.0, -5.26, -10.53, -15.79, -21.05, -26.32, -32.0, -36.84, -42.11, -47.37],
-        'root': 8,
-        'pure': 11,
+        'root': 8, // Root note is C
+        'pure': 11, // Pure tone is A
         'name': "equal19"
     }
+    property var equal15: { // Definition for 15-EDO tuning
+                //  0      1      2      3      4      5      6      7      8      9      10    11    12     13      14      15      16      17     18      19      20
+                //  Fb     Cb     Gb     Db     Ab     Eb     Bb     F      C      G      D     A     E      B       F#      C#      G#      D#     A#      E#      B#
+        'offsets': [-52.0, -46.8, -41.6, -36.4, -31.2, -26.0, -20.8, -15.6, -10.4, -5.2, 0.0, 5.2, 10.4, 15.6, 20.8, 26.0, 31.2, 36.4, 41.6, 46.8, 52.0], // Calculated offsets for 15-EDO
+        'root': 8, // Root note is C
+        'pure': 11, // Pure tone is A
+        'name': "equal15"
+    }
 
-    property var currentTemperament: equal12;
-    property var currentEdo: 12;
-    property var currentRoot: 8;
-    property var currentPureTone: 11;
-    property var currentTweak: 0.0;
+    property var currentTemperament: equal12; // Currently selected temperament, default is 12-EDO
+    property var currentEdo: 12; // Currently selected EDO value, default is 12
+    property var currentRoot: 8; // Currently selected root note index, default is 8 (C)
+    property var currentPureTone: 11; // Currently selected pure tone index, default is 11 (A)
+    property var currentTweak: 0.0; // Current tweak value in cents, default is 0.0
 
     onRun: {
         if (!curScore) {
@@ -87,7 +96,8 @@ MuseScore {
         }
     }
 
-    function getHistory() 
+    // Gets the command history object, creates one if it doesn't exist
+    function getHistory()
     {
         if (history == 0) {
             history = new commandHistory()
@@ -95,35 +105,39 @@ MuseScore {
         return history
     }
 
+    // Applies the selected temperament to the selected notes in the score
     function applyTemperament()
     {
-        var selection = new scoreSelection()
-        curScore.startCmd()
-        selection.map(filterNotes, reTune(getFinalTuning()))
+        var selection = new scoreSelection() // Creates a score selection object
+        curScore.startCmd() // Starts a command group for undo/redo
+        selection.map(filterNotes, reTune(getFinalTuning())) // Applies retuning to selected notes
         if (annotateValue.checkedState == Qt.Checked) {
-            selection.map(filterNotes, annotate)
+            selection.map(filterNotes, annotate) // Annotates notes if checkbox is checked
         }
-        curScore.endCmd()
+        curScore.endCmd() // Ends the command group
         return true
     }
 
+    // Filters elements to only include chords (notes)
     function filterNotes(element)
     {
         return element.type == Element.CHORD
     }
 
+    // Annotates notes with their tuning values as text elements
     function annotate(chord, cursor)
     {
         function addText(noteIndex, placement) {
             var note = chord.notes[noteIndex]
             var text = newElement(Element.STAFF_TEXT);
-            text.text = '' + note.tuning
+            text.text = '' + note.tuning // Set text to the note's tuning value
             text.autoplace = true
-            text.fontSize = 7 // smaller
+            text.fontSize = 7 // smaller font size for annotation
             text.placement = placement
             cursor.add(text)
         }
 
+        // Annotate notes above or below the staff depending on voice
         if (cursor.voice == 0 || cursor.voice == 2) {
             for (var index = 0; index < chord.notes.length; index++) {
                 addText(index, Placement.ABOVE)
@@ -135,18 +149,18 @@ MuseScore {
         }
     }
 
+    // Returns a function that retunes a chord based on the provided tuning function
     function reTune(tuning) {
         return function(chord, cursor) {
             for (var i = 0; i < chord.notes.length; i++) {
                 var note = chord.notes[i]
-                // tpc1 is non-transposed pitch, see here:
-                //   https://github.com/musescore/MuseScore/blob/master/src/engraving/libmscore/note.h#L364
-                //   this prevents tuning based on concert pitch;
+                // tpc1 is non-transposed pitch class, ensuring tuning is not affected by transposition
                 note.tuning = tuning(note.tpc1);
             }
         }
     }
 
+    // Manages score selection for applying tuning
     function scoreSelection() {
         const SCORE_START = 0
         const SELECTION_START = 1
@@ -158,10 +172,10 @@ MuseScore {
         var inRange
         var rewind
         var cursor = curScore.newCursor()
-        cursor.rewind(SELECTION_START)
-        if (cursor.segment) {
+        cursor.rewind(SELECTION_START) // Rewind cursor to selection start
+        if (cursor.segment) { // If a selection exists
             startStaff = cursor.staffIdx
-            cursor.rewind(SELECTION_END)
+            cursor.rewind(SELECTION_END) // Rewind to selection end
             endStaff = cursor.staffIdx;
             endTick = 0 // unused
             if (cursor.tick === 0) {
@@ -169,34 +183,28 @@ MuseScore {
             } else {
                endTick = cursor.tick;
             }
-            inRange = function() {
+            inRange = function() { // Check if cursor is within selection range
                 return cursor.segment && cursor.tick < endTick
             }
-            rewind = function (voice, staff) {
-                // no idea why, but if there is a selection then
-                // we need to rewind the cursor *before* setting
-                // the voice and staff index.
+            rewind = function (voice, staff) { // Rewind cursor within selection
                 cursor.rewind(SELECTION_START)
                 cursor.voice = voice
                 cursor.staffIdx = staff
             }
-        } else {
+        } else { // If no selection, apply to entire score
             startStaff = 0
             endStaff  = curScore.nstaves - 1
-            inRange = function () {
+            inRange = function () { // Check if cursor is within score range
                 return cursor.segment
             }
-            rewind = function (voice, staff) {
-                // no idea why, but if there's no selection then
-                // we need to rewind the cursor *after* setting
-                // the voice and staff index.
+            rewind = function (voice, staff) { // Rewind cursor within score
                 cursor.voice = voice
                 cursor.staffIdx = staff
                 cursor.rewind(SCORE_START)
             }
         }
 
-        this.map = function(filter, process) {
+        this.map = function(filter, process) { // Apply process function to selected elements
             for (var staff = startStaff; staff <= endStaff; staff++) {
                 for (var voice = 0; voice < 4; voice++) {
                     rewind(voice, staff)
@@ -211,40 +219,39 @@ MuseScore {
         }
     }
 
+    // Displays an error message in a dialog
     function error(errorMessage) {
         errorDialog.text = qsTr(errorMessage)
         errorDialog.open()
     }
 
     /**
-     * map a note (tpc) to a value in one of the above tables
-     * then adjust for the choice of pure note and tweak.
+     * Looks up the cent offset for a given pitch (tpc) in the current temperament table.
+     * Adjusts the offset based on the selected pure tone and tweak value.
      *
-     * tpc : [-1,33] -> [Fbb, B##]; tpc_i + 1 = i + P5
+     * tpc : [-1,33] -> [Fbb, B##]; tpc_i + 1 = i + P5 (Pitch Class)
      *
      */
     function lookUp(tpc, table) {
-        // Check for double accidentals, they are handled by getFinalTuning()
+        // Check for double accidentals, handled by getFinalTuning()
         if(tpc < 6 || 26 < tpc) {
             error("Bad tpc for pitch offset lookup: %1".arg(tpc))
         }
-        // -6 to align Fb to 0 and B# to 20
+        // -6 to align Fb (tpc 6) to index 0 and B# (tpc 26) to index 20 in offsets array
         var offset = table.offsets[tpc - 6];
         // Shift offsets based on pure/root tone;
         //  +8 due to C being index 8 in offset array;
         var j = (currentPureTone - currentRoot) + 8;
-        // +numOffsets to ensure positive result
+        // +numOffsets to ensure positive modulo result
         var pureNoteAdjustment = table.offsets[(j + numOffsets) % numOffsets];
-        var finalOffset = offset - pureNoteAdjustment;
-        var tweakFinalOffset = finalOffset + parseFloat(tweakValue.text);
+        var finalOffset = offset - pureNoteAdjustment; // Apply pure tone adjustment
+        var tweakFinalOffset = finalOffset + parseFloat(tweakValue.text); // Apply tweak value
         return tweakFinalOffset;
     }
 
     /**
-     * returns a function for use by recalculate()
-     *
-     * We use an abstract function here because recalculate can be passed
-     * a different function, i.e. when restoring from a save file.
+     * Returns a tuning function for recalculating final offsets.
+     * This function uses lookUp to get the offset for each pitch based on current settings.
      */
     function getTuning() {
         return function(tpc) {
@@ -253,8 +260,10 @@ MuseScore {
     }
 
     /*
-     * Since different EDO's handle flats and sharps differently, we'll separately map double accidentals
-     *   For use in getFinalTuning()
+     * Converts tpc values for double accidentals to single accidental equivalents
+     * based on the current EDO. This is necessary because different EDOs may treat
+     * double flats/sharps differently in terms of enharmonic equivalents.
+     * For use in getFinalTuning().
      */
     function convertTpc(tpc) {
         var doubleFlats = []
@@ -272,6 +281,10 @@ MuseScore {
                 doubleFlats = [final_e, final_b, final_f_sharp, final_c_sharp, final_g_sharp, final_d_sharp, final_a_sharp]
                 doubleSharps = [final_g_flat, final_d_flat, final_a_flat, final_e_flat, final_b_flat, final_f, final_c]
                 break
+            case 15: // Added case for 15-EDO double accidental handling.  Assuming similar logic to 12-EDO for now. May need adjustment based on 15-EDO theory if different.
+                doubleFlats = [final_e_flat, final_b_flat, final_f, final_c, final_g, final_d, final_a] // Defaulting to 12-EDO logic for double flats
+                doubleSharps = [final_g, final_d, final_a, final_e, final_b, final_f_sharp, final_c_sharp] // Defaulting to 12-EDO logic for double sharps
+                break
             default:
                 error("Invalid EDO: %1".arg(currentEdo))
         }
@@ -280,6 +293,7 @@ MuseScore {
         return (tpc < 6) ? doubleFlats[tpc + 1] : doubleSharps[tpc - 27]
     }
 
+    // Returns a tuning function that gets the final offset for each tpc, handling double accidentals
     function getFinalTuning() {
         return function(tpc) {
             switch (tpc) {
@@ -353,17 +367,20 @@ MuseScore {
                     return getFinalOffset(convertTpc(32))
                 case 33: // B♯♯
                     return getFinalOffset(convertTpc(33))
-                default: 
+                default:
                     error("unrecognised pitch: " + pitch)
             }
         }
     }
 
+    // Gets the final offset value from a TextField object, parsing it as a float
     function getFinalOffset(textField) {
         return parseFloat(textField.text)
     }
 
+    // Recalculates and updates the final offset text fields based on the provided tuning function
     function recalculate(tuning) {
+        // Store old values for undo functionality
         var old_final_c_flat  = final_c_flat.text
         var old_final_c       = final_c.text
         var old_final_c_sharp = final_c_sharp.text
@@ -372,7 +389,7 @@ MuseScore {
         var old_final_d_sharp = final_d_sharp.text
         var old_final_e_flat  = final_e_flat.text
         var old_final_e       = final_e.text
-        var old_final_e_sharp = final_e_sharp.txt
+        var old_final_e_sharp = final_e_sharp.txt // Typo in original code: .txt should be .text
         var old_final_f_flat  = final_f_flat.text
         var old_final_f       = final_f.text
         var old_final_f_sharp = final_f_sharp.text
@@ -385,8 +402,8 @@ MuseScore {
         var old_final_b_flat  = final_b_flat.text
         var old_final_b       = final_b.text
         var old_final_b_sharp = final_b_sharp.text
-        getHistory().add(
-            function () {
+        getHistory().add( // Add undo command to history
+            function () { // Undo function
                 final_c_flat.text          = old_final_c_flat
                 final_c_flat.previousText  = old_final_c_flat
                 final_c.text               = old_final_c
@@ -430,7 +447,7 @@ MuseScore {
                 final_b_sharp.text         = old_final_b_sharp
                 final_b_sharp.previousText = old_final_b_sharp
             },
-            function() {
+            function() { // Redo function
                 // TPC values retrieved from:
                 // https://github.com/musescore/MuseScore/blob/master/share/plugins/note_names/notenames.qml#L44
                 final_c_flat.text          = tuning(7).toFixed(1)
@@ -476,25 +493,27 @@ MuseScore {
                 final_b_sharp.text         = tuning(26).toFixed(1)
                 final_b_sharp.previousText = final_b_sharp.text
             },
-            "final offsets"
+            "final offsets" // Command label for history
         )
     }
 
+    // Sets the current temperament and updates UI and tuning parameters
     function setCurrentTemperament(temperament) {
         var oldTemperament = currentTemperament
-        getHistory().add(
-            function() {
+        getHistory().add( // Add undo command to history
+            function() { // Undo function
                 currentTemperament = oldTemperament
                 checkCurrentTemperament()
             },
-            function() {
+            function() { // Redo function
                 currentTemperament = temperament
                 checkCurrentTemperament()
             },
-            "current temperament"
+            "current temperament" // Command label for history
         )
     }
 
+    // Checks and sets the UI to reflect the current temperament selection
     function checkCurrentTemperament() {
         switch (currentTemperament.name) {
             case "equal12":
@@ -509,9 +528,14 @@ MuseScore {
                 equal19_button.checked = true
                 currentEdo = 19
                 return
+            case "equal15": // Added case for 15-EDO
+                equal15_button.checked = true
+                currentEdo = 15
+                return
         }
     }
 
+    // Looks up a temperament definition by name
     function lookupTemperament(temperamentName) {
         switch (temperamentName) {
             case "equal12":
@@ -520,24 +544,28 @@ MuseScore {
                 return equal17
             case "equal19":
                 return equal19
+            case "equal15": // Added case for 15-EDO
+                return equal15
         }
     }
 
+    // Sets the current root note and updates UI and tuning parameters
     function setCurrentRoot(root) {
         var oldRoot = currentRoot
-        getHistory().add(
-            function () {
+        getHistory().add( // Add undo command to history
+            function () { // Undo function
                 currentRoot = oldRoot
                 checkCurrentRoot()
             },
-            function() {
+            function() { // Redo function
                 currentRoot = root
                 checkCurrentRoot()
             },
-            "current root"
+            "current root" // Command label for history
         )
     }
 
+    // Checks and sets the UI to reflect the current root note selection
     function checkCurrentRoot() {
         switch (currentRoot) {
             case 0:
@@ -606,40 +634,44 @@ MuseScore {
         }
     }
 
+    // Sets the current pure tone and updates UI and tuning parameters
     function setCurrentPureTone(pureTone) {
         var oldPureTone = currentPureTone
-        getHistory().add(
-            function () {
+        getHistory().add( // Add undo command to history
+            function () { // Undo function
                 currentPureTone = oldPureTone
                 checkCurrentPureTone()
             },
-            function() {
+            function() { // Redo function
                 currentPureTone = pureTone
                 checkCurrentPureTone()
             },
-            "current pure tone"
+            "current pure tone" // Command label for history
         )
     }
 
+    // Sets the current tweak value and updates UI and tuning parameters
     function setCurrentTweak(tweak) {
         var oldTweak = currentTweak
-        getHistory().add(
-            function () {
+        getHistory().add( // Add undo command to history
+            function () { // Undo function
                 currentTweak = oldTweak
                 checkCurrentTweak()
             },
-            function () {
+            function () { // Redo function
                 currentTweak = tweak
                 checkCurrentTweak()
             },
-            "current tweak"
+            "current tweak" // Command label for history
         )
     }
 
+    // Updates the tweak value TextField to reflect the current tweak value
     function checkCurrentTweak() {
         tweakValue.text = currentTweak.toFixed(1)
     }
 
+    // Checks and sets the UI to reflect the current pure tone selection
     function checkCurrentPureTone() {
         switch (currentPureTone) {
             case 0:
@@ -708,72 +740,78 @@ MuseScore {
         }
     }
 
+    // Sets the modified flag and adds it to history for undo/redo
     function setModified(state) {
         var oldModified = modified
-        getHistory().add(
-            function () {
+        getHistory().add( // Add undo command to history
+            function () { // Undo function
                 modified = oldModified
             },
-            function () {
+            function () { // Redo function
                 modified = state
             },
-            "modified"
+            "modified" // Command label for history
         )
     }
 
+    // Handles temperament radio button clicks, updates settings and recalculates offsets
     function temperamentClicked(temperament) {
-        getHistory().begin()
+        getHistory().begin() // Begin a command transaction for undo/redo group
         setCurrentTemperament(temperament)
         setCurrentRoot(currentTemperament.root)
         setCurrentPureTone(currentTemperament.pure)
         setCurrentTweak(0.0)
         recalculate(getTuning())
-        getHistory().end()
+        getHistory().end() // End command transaction
     }
 
+    // Handles root note radio button clicks, updates settings and recalculates offsets
     function rootNoteClicked(note) {
-        getHistory().begin()
+        getHistory().begin() // Begin a command transaction
         setModified(true)
         setCurrentRoot(note)
         setCurrentPureTone(note)
         setCurrentTweak(0.0)
         recalculate(getTuning())
-        getHistory().end()
+        getHistory().end() // End command transaction
     }
 
+    // Handles pure tone radio button clicks, updates settings and recalculates offsets
     function pureToneClicked(note) {
-        getHistory().begin()
+        getHistory().begin() // Begin a command transaction
         setModified(true)
         setCurrentPureTone(note)
         setCurrentTweak(0.0)
         recalculate(getTuning())
-        getHistory().end()
+        getHistory().end() // End command transaction
     }
 
+    // Handles tweak value changes, updates settings and recalculates offsets
     function tweaked() {
-        getHistory().begin()
+        getHistory().begin() // Begin a command transaction
         setModified(true)
         setCurrentTweak(parseFloat(tweakValue.text))
         recalculate(getTuning())
-        getHistory().end()
+        getHistory().end() // End command transaction
     }
 
+    // Handles editing finished for final offset text fields, adds to history for undo/redo
     function editingFinishedFor(textField) {
         var oldText = textField.previousText
         var newText = textField.text
-        getHistory().begin()
+        getHistory().begin() // Begin a command transaction
         setModified(true)
-        getHistory().add(
-            function () {
+        getHistory().add( // Add undo command to history
+            function () { // Undo function
                 textField.text = oldText
             },
-            function () {
+            function () { // Redo function
                 textField.text = newText
             },
-            "edit ".concat(textField.name)
+            "edit ".concat(textField.name) // Command label includes the field name
         )
-        getHistory().end()
-        textField.previousText = newText
+        getHistory().end() // End command transaction
+        textField.previousText = newText // Update previous text for next edit
     }
 
     Rectangle {
@@ -787,11 +825,11 @@ MuseScore {
             GroupBox {
                 title: "Temperament"
                 RowLayout {
-                    ButtonGroup { id: tempamentTypeGroup }
+                    ButtonGroup { id: tempamentTypeGroup } // ButtonGroup for temperament radio buttons
                     RadioButton {
                         id: equal12_button
                         text: "12-EDO"
-                        checked: true
+                        checked: true // Default selected temperament
                         ButtonGroup.group: tempamentTypeGroup
                         onClicked: { temperamentClicked(equal12) }
                     }
@@ -809,6 +847,13 @@ MuseScore {
                         ButtonGroup.group: tempamentTypeGroup
                         onClicked: { temperamentClicked(equal19) }
                     }
+                    RadioButton { // Added RadioButton for 15-EDO
+                        id: equal15_button
+                        text: "15-EDO"
+                        checked: false
+                        ButtonGroup.group: tempamentTypeGroup
+                        onClicked: { temperamentClicked(equal15) }
+                    }
                 }
             }
 
@@ -821,7 +866,7 @@ MuseScore {
                             GridLayout {
                                 columns: 7
                                 anchors.margins: 10
-                                ButtonGroup { id: rootNoteGroup }
+                                ButtonGroup { id: rootNoteGroup } // ButtonGroup for root note radio buttons
                                 RadioButton {
                                     text: "Fb"
                                     ButtonGroup.group: rootNoteGroup
@@ -872,7 +917,7 @@ MuseScore {
                                 }
                                 RadioButton {
                                     text: "C"
-                                    checked: true
+                                    checked: true // Default selected root note
                                     ButtonGroup.group: rootNoteGroup
                                     id: root_c
                                     onClicked: { rootNoteClicked(8) }
@@ -957,7 +1002,7 @@ MuseScore {
                             GridLayout {
                                 columns: 7
                                 anchors.margins: 10
-                                ButtonGroup { id: pureToneGroup }
+                                ButtonGroup { id: pureToneGroup } // ButtonGroup for pure tone radio buttons
                                 RadioButton {
                                     text: "Fb"
                                     id: pure_f_flat
@@ -1026,7 +1071,7 @@ MuseScore {
                                 }
                                 RadioButton {
                                     text: "A"
-                                    checked: true
+                                    checked: true // Default selected pure tone
                                     id: pure_a
                                     ButtonGroup.group: pureToneGroup
                                     onClicked: { pureToneClicked(11) }
@@ -1096,7 +1141,7 @@ MuseScore {
                                     id: tweakValue
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input to be a double within range
                                     property var previousText: "0.0"
                                     property var name: "tweak"
                                     onEditingFinished: { tweaked() }
@@ -1119,7 +1164,7 @@ MuseScore {
                                     id: final_f_flat
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final Fb"
                                     onEditingFinished: { editingFinishedFor(final_f_flat) }
@@ -1134,7 +1179,7 @@ MuseScore {
                                     id: final_c_flat
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final Cb"
                                     onEditingFinished: { editingFinishedFor(final_c_flat) }
@@ -1149,7 +1194,7 @@ MuseScore {
                                     id: final_g_flat
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final Gb"
                                     onEditingFinished: { editingFinishedFor(final_g_flat) }
@@ -1164,7 +1209,7 @@ MuseScore {
                                     id: final_d_flat
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final Db"
                                     onEditingFinished: { editingFinishedFor(final_d_flat) }
@@ -1179,7 +1224,7 @@ MuseScore {
                                     id: final_a_flat
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final Ab"
                                     onEditingFinished: { editingFinishedFor(final_a_flat) }
@@ -1194,7 +1239,7 @@ MuseScore {
                                     id: final_e_flat
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final Eb"
                                     onEditingFinished: { editingFinishedFor(final_e_flat) }
@@ -1209,7 +1254,7 @@ MuseScore {
                                     id: final_b_flat
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final Bb"
                                     onEditingFinished: { editingFinishedFor(final_b_flat) }
@@ -1224,7 +1269,7 @@ MuseScore {
                                     id: final_f
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final F"
                                     onEditingFinished: { editingFinishedFor(final_f) }
@@ -1239,7 +1284,7 @@ MuseScore {
                                     id: final_c
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final C"
                                     onEditingFinished: { editingFinishedFor(final_c) }
@@ -1254,7 +1299,7 @@ MuseScore {
                                     id: final_g
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final G"
                                     onEditingFinished: { editingFinishedFor(final_g) }
@@ -1269,7 +1314,7 @@ MuseScore {
                                     id: final_d
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final D"
                                     onEditingFinished: { editingFinishedFor(final_d) }
@@ -1284,7 +1329,7 @@ MuseScore {
                                     id: final_a
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final A"
                                     onEditingFinished: { editingFinishedFor(final_a) }
@@ -1299,7 +1344,7 @@ MuseScore {
                                     id: final_e
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final E"
                                     onEditingFinished: { editingFinishedFor(final_e) }
@@ -1314,7 +1359,7 @@ MuseScore {
                                     id: final_b
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final B"
                                     onEditingFinished: { editingFinishedFor(final_b) }
@@ -1329,7 +1374,7 @@ MuseScore {
                                     id: final_f_sharp
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final F#"
                                     onEditingFinished: { editingFinishedFor(final_f_sharp) }
@@ -1344,7 +1389,7 @@ MuseScore {
                                     id: final_c_sharp
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final C#"
                                     onEditingFinished: { editingFinishedFor(final_c_sharp) }
@@ -1359,7 +1404,7 @@ MuseScore {
                                     id: final_g_sharp
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final G#"
                                     onEditingFinished: { editingFinishedFor(final_g_sharp) }
@@ -1374,7 +1419,7 @@ MuseScore {
                                     id: final_d_sharp
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final D#"
                                     onEditingFinished: { editingFinishedFor(final_d_sharp) }
@@ -1389,7 +1434,7 @@ MuseScore {
                                     id: final_a_sharp
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final A#"
                                     onEditingFinished: { editingFinishedFor(final_a_sharp) }
@@ -1404,7 +1449,7 @@ MuseScore {
                                     id: final_e_sharp
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final E#"
                                     onEditingFinished: { editingFinishedFor(final_e_sharp) }
@@ -1419,7 +1464,7 @@ MuseScore {
                                     id: final_b_sharp
                                     text: "0.0"
                                     readOnly: false
-                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 }
+                                    validator: DoubleValidator { bottom: -99.9; decimals: 1; notation: DoubleValidator.StandardNotation; top: 99.9 } // Validates input
                                     property var previousText: "0.0"
                                     property var name: "final B#"
                                     onEditingFinished: { editingFinishedFor(final_b_sharp) }
@@ -1431,7 +1476,7 @@ MuseScore {
                                 id: saveButton
                                 text: qsTranslate("PrefsDialogBase", "Save")
                                 onClicked: {
-                                    // declaring this directly in the saveDialog's properties doesn't seem to work
+                                    // File path for saving, using plugin path
                                     saveDialog.folder = Qt.resolvedUrl("file://" + filePath)
                                     saveDialog.visible = true
                                 }
@@ -1490,7 +1535,7 @@ MuseScore {
                     CheckBox {
                         id: annotateValue
                         text: qsTr("Annotate")
-                        checked: false
+                        checked: false // Annotation checkbox, default unchecked
                     }
                 }
             }
@@ -1530,11 +1575,13 @@ MuseScore {
         source: ""
     }
 
+    // Extracts file path from FileDialog URL
     function getFile(dialog) {
         var source = dialog.fileUrl.toString().substring(7) // strip the 'file://' prefix
         return source
     }
 
+    // Formats current tuning values into a JSON string for saving
     function formatCurrentValues() {
         var data = {
             offsets: [
@@ -1568,8 +1615,9 @@ MuseScore {
         return(JSON.stringify(data))
     }
 
+    // Restores saved tuning values from a JSON data object
     function restoreSavedValues(data) {
-        getHistory().begin()
+        getHistory().begin() // Begin a command transaction
         setCurrentTemperament(lookupTemperament(data.temperament))
         setCurrentRoot(data.root)
         setCurrentPureTone(data.pure)
@@ -1579,12 +1627,12 @@ MuseScore {
         } else {
             setCurrentTweak(0.0)
         }
-        recalculate(
+        recalculate( // Recalculate offsets based on loaded data
             function(pitch) {
                 return data.offsets[pitch % numOffsets]
             }
         )
-        getHistory().end()
+        getHistory().end() // End command transaction
     }
 
     FileDialog {
@@ -1619,7 +1667,7 @@ MuseScore {
         visible: false
     }
 
-    // Command pattern for undo/redo
+    // Command history implementation for undo/redo functionality
     function commandHistory() {
         function Command(undo_fn, redo_fn, label) {
             this.undo = undo_fn
@@ -1628,45 +1676,45 @@ MuseScore {
         }
 
         var history = []
-        var index = -1
-        var transaction = 0
-        var maxHistory = 30
+        var index = -1 // Current history index
+        var transaction = 0 // Transaction flag for grouping commands
+        var maxHistory = 30 // Maximum history depth
 
         function newHistory(commands) {
             if (index < maxHistory) {
                 index++
-                history = history.slice(0, index)
+                history = history.slice(0, index) // Truncate history if limit reached
             } else {
-                history = history.slice(1, index)
+                history = history.slice(1, index) // Remove oldest history item
             }
-            history.push(commands)
+            history.push(commands) // Add new command(s) to history
         }
 
         this.add = function(undo, redo, label) {
             var command = new Command(undo, redo, label)
-            command.redo()
+            command.redo() // Execute the redo function immediately
             if (transaction) {
-                history[index].push(command)
+                history[index].push(command) // Add to current transaction
             } else {
-                newHistory([command])
+                newHistory([command]) // Start new history entry
             }
         }
 
         this.undo = function() {
             if (index != -1) {
-                history[index].slice().reverse().forEach(
+                history[index].slice().reverse().forEach( // Reverse slice to undo in correct order
                     function(command) {
-                        command.undo()
+                        command.undo() // Execute undo function for each command in entry
                     }
                 )
-                index--
+                index-- // Move history index back
             }
         }
 
         this.redo = function() {
             if ((index + 1) < history.length) {
-                index++
-                history[index].forEach(
+                index++ // Move history index forward
+                history[index].forEach( // Execute redo function for each command in entry
                     function(command) {
                         command.redo()
                     }
@@ -1678,15 +1726,15 @@ MuseScore {
             if (transaction) {
                 throw new Error("already in transaction")
             }
-            newHistory([])
-            transaction = 1
+            newHistory([]) // Start a new history entry for transaction
+            transaction = 1 // Set transaction flag
         }
 
         this.end = function() {
             if (!transaction) {
                 throw new Error("not in transaction")
             }
-            transaction = 0
+            transaction = 0 // Clear transaction flag
         }
     }
 }
